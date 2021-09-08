@@ -11,7 +11,7 @@ from custom_cgls_lrpr import cglsLRPR
 from reshaped_wirtinger_flow import rwf_fit
 
 
-def chooseRank(array, omega=1.3):
+def chooseRank(array, omega=0.5):
     """
         Function to return the index of the difference between
         the j-th and (n)-th element with threshold omega.

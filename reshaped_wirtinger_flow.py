@@ -3,10 +3,11 @@
 """
 Created on Wed Jul 21 11:29:13 2021
 
-@author: soominkwon
+@author: soominkwon, helloimlixin
 """
 
 import numpy as np
+from scipy.interpolate import griddata
 
 
 def initLambda(y, A):
@@ -109,17 +110,25 @@ def computeGradient(z, y, A):
     update_z = np.zeros(z.shape, dtype=np.complex)
 
     for i in range(m_dim):
-        a_i = A[:, i]
+        a_i = A[:, i]  
         a_i = np.reshape(a_i, (-1, 1))
         
         y_i = y[i]
         
         first_term = a_i.conj().T @ z
 
-        second_term = y_i * (first_term / np.abs(first_term))
-        sum_term = (first_term - second_term) * a_i
+        if first_term**2 != 0:
+            second_term = y_i * (first_term / np.abs(first_term))
+            sum_term = (first_term - second_term) * a_i
 
-        update_z += sum_term.squeeze()
+            update_z += sum_term.squeeze()
+
+        # x, y = np.indices(first_term.shape)
+        # first_term[first_term == 0] = griddata(
+        #     (x[first_term != 0], y[first_term != 0]),
+        #     first_term[first_term != 0],
+        #     (x[first_term == 0], y[first_term == 0])
+        # )
 
     updated_z = (1/m_dim) * update_z
     
@@ -138,7 +147,8 @@ def rwf_fit(y, A, max_iterations=50, mu=0.8, alpha_l=1, alpha_u=5, print_iter=Fa
     
     # spectral initialization
     init_lambda = initLambda(y=y, A=A)
-    z_init = initSpectral(y=y, A=A, lambda_init=init_lambda, alpha_l=alpha_l, alpha_u=alpha_u)    
+    z_init = initSpectral(
+        y=y, A=A, lambda_init=init_lambda, alpha_l=alpha_l, alpha_u=alpha_u)    
     
     for t in range(max_iterations):
         
