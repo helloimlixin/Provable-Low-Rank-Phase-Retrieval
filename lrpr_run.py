@@ -17,12 +17,12 @@ with np.load(image_name) as data:
     tensor = data['arr_0']
 n1, n2, q_dim = tensor.shape
 
-L = 3 # number of modulations
+L = 5 # number of modulations
 m_dim = n1 * n2 * L
 
 images, Y, A = generateLRPRMeasurements(image_name=image_name, m_dim=m_dim, L=L)
 
-X_hat = provable_lrpr_fit(Y=Y, A=A, rank=1, max_iters=10)
+X_hat = provable_lrpr_fit(Y=Y, A=A, rank=5, max_iters=10)
 
 vec_first_image = X_hat[:, 0]
 

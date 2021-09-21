@@ -164,8 +164,8 @@ def provable_lrpr_fit(Y, A, max_iters, rank=None, print_iter=True):
         C_all = updateC(A, U_init, B_init)
 
         # applying QR decomposition
-        Qb, Rb = np.linalg.qr(B_init)
-        B_init = Qb
+        Qb, Rb = np.linalg.qr(B_init.conj().T)
+        B_init = Rb.conj().T
          
         # update U
         st = 0
@@ -180,7 +180,7 @@ def provable_lrpr_fit(Y, A, max_iters, rank=None, print_iter=True):
             en += m        
         
         U_vec = cglsLRPR(A_sample=A, B_factor=B_init, C_y=Y_vec)
-        U_init = np.reshape(U_vec, (n, r), order='F')
+        U_init = np.reshape(U_vec, (n, -1), order='F')
         
         # applying QR decomposition
         Qu, Ru = np.linalg.qr(U_init)
